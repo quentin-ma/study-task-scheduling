@@ -12,7 +12,6 @@ Functions with interfaces but no implementation:
     priority_by_{lpt, spt, successors, hlf, cp}
 """
 
-
 def priority_by_id(graph):
     """Sets the priority of each task as its identifier.
     Smaller identifiers mean a higher priority.
@@ -100,6 +99,18 @@ def priority_by_hlf(graph):
             continue
         graph.vertices[i].priority = graph.vertices[(k - i) - 1].id * graph.vertices[i].priority
 
+def dfs(graph, visited, v, id, i = 1, s = 1, hbl = 0):
+    if i == 1 and len(graph.vertices[v].successors) == 0:
+        return graph.vertices[v].load
+    visited[v] = True
+    assert(type(v) == int)
+    if i == len(graph.vertices) - id - 1:
+        return s
+    else: 
+        for u in graph.vertices[v].successors:
+            if visited[u] == False:
+                return dfs(graph, visited, u, id, i + 1, s + graph.vertices[v].load)
+
 def priority_by_cp(graph):
     """Sets the priority of each task as its critical path value.
     Higher critical path values mean a higher priority.
@@ -118,3 +129,9 @@ def priority_by_cp(graph):
     the value of its bottom level. Chapter 7.3 in the same book explains how
     to compute the top and bottom levels of vertices.
     """
+    size = len(graph.vertices)
+    visited = [False] * size
+    for i in range(len(graph.vertices)):
+        s = dfs(graph, visited, i, graph.vertices[i].id) 
+        graph.vertices[i].priority = -1 * s
+        visited = [False] * size
