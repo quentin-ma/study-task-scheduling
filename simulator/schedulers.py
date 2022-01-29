@@ -24,6 +24,7 @@ def priority_by_id(graph):
     """
     for id, task in graph.vertices.items():
         task.priority = id
+    
 
 def priority_by_topological_order(graph):
     """Sets the priority of each task as its order in the topology.
@@ -47,7 +48,9 @@ def priority_by_lpt(graph):
     graph : Graph object
         Graph to update priorities
     """
-    #TODO
+    for (load, task) in graph.vertices.items():
+        task.priority *= int(task.load)
+        
 
 def priority_by_spt(graph):
     """Sets the priority of each task as its load.
@@ -58,7 +61,8 @@ def priority_by_spt(graph):
     graph : Graph object
         Graph to update priorities
     """
-    #TODO
+    for (load, task) in graph.vertices.items():
+        task.priority = int(task.load)
 
 def priority_by_successors(graph):
     """Sets the priority of each task as its number of successors.
@@ -69,7 +73,8 @@ def priority_by_successors(graph):
     graph : Graph object
         Graph to update priorities
     """
-    #TODO
+    for successors, task in graph.vertices.items():
+        task.priority *= int(len(task.successors))
 
 def priority_by_hlf(graph):
     """Sets the priority of each task following HLF.
@@ -89,7 +94,11 @@ def priority_by_hlf(graph):
     The algorithm is thought for unitary tasks and precedence trees.
     It is supposed to be adapted here to work with any kind of graph.
     """
-    # TODO
+    k = len(graph.vertices)
+    for i in range(k):
+        if graph.vertices[(k - i) - 1].id == 0:
+            continue
+        graph.vertices[i].priority = graph.vertices[(k - i) - 1].id * graph.vertices[i].priority
 
 def priority_by_cp(graph):
     """Sets the priority of each task as its critical path value.
@@ -109,4 +118,3 @@ def priority_by_cp(graph):
     the value of its bottom level. Chapter 7.3 in the same book explains how
     to compute the top and bottom levels of vertices.
     """
-    #TODO
